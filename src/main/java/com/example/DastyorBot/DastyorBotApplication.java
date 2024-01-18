@@ -10,6 +10,9 @@ public class DastyorBotApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DastyorBotApplication.class, args);
 		System.out.println("App start");
+		System.out.println("App start");
+
+
 	}
 
 }
