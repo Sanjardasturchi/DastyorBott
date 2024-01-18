@@ -12,20 +12,21 @@ import java.time.LocalTime;
 @Getter
 public class AutomobileDTO {
     private Integer id;
-    private AcctiveStatus acctiveStatus;
+    private String city;  //shahar
+    private CarType carType;
+    private SelectedPurchaseType type; // Rent or Sale
+    private String brandName;
+    private String model;
+    private Double price;
     private String phone;
     private String username;
     private String description;
-    private LocalDateTime createdDateTime;
-    private Double latitude;
-    private Double longitude;
-    private SelectedPurchaseType type; // Rent or Sale
-    private String city;  //shahar
-    private String district; //tuman
-    private String brandName;
-    private String model;
-    private CarType carType;
-    private Double price;
+    private String district; //tuman (50/50)
     private LocalTime startTime;
     private LocalTime endTime;
+    private Double latitude;
+    private Double longitude;
+    private LocalDateTime createdDateTime;
+    private AcctiveStatus acctiveStatus;
+    private String adCreatorChatId;
 }

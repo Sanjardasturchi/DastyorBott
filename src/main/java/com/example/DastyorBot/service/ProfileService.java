@@ -29,7 +29,7 @@ public class ProfileService {
         entity.setAcctiveStatus(AcctiveStatus.ACCTIVE);
         entity.setCurrentStep(CommonConstants.MENU);
         entity.setRole(ProfileRole.USER);
-        entity.setCreatedDateTime(LocalDateTime.now());
+        entity.setCreatedDateTime(dto.getCreatedDateTime());
         entity.setUsername(dto.getUsername());
         entity.setChatId(dto.getChatId());
 
@@ -40,7 +40,7 @@ public class ProfileService {
     }
 
     public void changeStep(String chatId, String step) {
-        profileRepository.changeStep(chatId,step);
+        profileRepository.changeStep(step,chatId);
     }
     public void changingElementId(Integer id, String chatId) {
         profileRepository.changingElementId(id,chatId);

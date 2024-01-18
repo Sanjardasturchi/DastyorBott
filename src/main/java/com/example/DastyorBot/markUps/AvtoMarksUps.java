@@ -105,4 +105,27 @@ public class AvtoMarksUps {
     }
 
 
+    public static InlineKeyboardMarkup acceptToCreat() {
+        List<InlineKeyboardButton> buttons=new LinkedList<>();
+        List<List<InlineKeyboardButton>> rowList=new LinkedList<>();
+
+        InlineKeyboardButton button=new InlineKeyboardButton();
+
+        button.setText(CommonConstants.ACCEPT);
+        button.setCallbackData(CommonConstants.ACCEPT);
+
+        buttons.add(button);
+        rowList.add(buttons);
+
+        button=new InlineKeyboardButton();
+        buttons=new LinkedList<>();
+
+        button.setText(CommonConstants.NON_ACCEPTANCE);
+        button.setCallbackData(CommonConstants.NON_ACCEPTANCE);
+
+        buttons.add(button);
+        rowList.add(buttons);
+
+        return new InlineKeyboardMarkup(rowList);
+    }
 }

@@ -16,12 +16,9 @@ import java.util.List;
 public class MarkUps {
     public static ReplyKeyboard contactButton() {
         KeyboardRow row = new KeyboardRow();
-
         KeyboardButton button = new KeyboardButton("Share\uD83D\uDCDE⏏\uFE0F");
         button.setRequestContact(true);
         row.add(button);
-
-
         return ReplyKeyboardMarkup.builder()
                 .keyboard(List.of(row))
                 .resizeKeyboard(true)
@@ -30,24 +27,18 @@ public class MarkUps {
 
     public static ReplyKeyboard adminButton() {
         KeyboardRow row = new KeyboardRow();
-
         KeyboardButton button = new KeyboardButton("Adminga savol yo'llash");
         row.add(button);
-
-
         return ReplyKeyboardMarkup.builder()
                 .keyboard(List.of(row))
                 .resizeKeyboard(true)
                 .build();
     }
 
-    public ReplyKeyboard backButton() {
+    public static ReplyKeyboard backButton() {
         KeyboardRow row = new KeyboardRow();
-
         KeyboardButton button = new KeyboardButton("Ortga");
         row.add(button);
-
-
         return ReplyKeyboardMarkup.builder()
                 .keyboard(List.of(row))
                 .resizeKeyboard(true)
@@ -157,5 +148,27 @@ public class MarkUps {
          *         keyboardButtonRow.add(inlineKeyboardButton);
          *
          *         rowList.add(keyboardButtonRow);**/
+    }
+
+    public static ReplyKeyboard backWithNextButtons() {
+        KeyboardRow row = new KeyboardRow();
+        KeyboardButton button = new KeyboardButton(CommonConstants.BACK);
+        row.add(button);
+        KeyboardButton button1 = new KeyboardButton(CommonConstants.NEXT);
+        row.add(button1);
+        return ReplyKeyboardMarkup.builder()
+                .keyboard(List.of(row))
+                .resizeKeyboard(true)
+                .build();
+    }
+
+    public static ReplyKeyboard start() {
+        KeyboardRow row = new KeyboardRow();
+        KeyboardButton button1 = new KeyboardButton("/start");
+        row.add(button1);
+        return ReplyKeyboardMarkup.builder()
+                .keyboard(List.of(row))
+                .resizeKeyboard(true)
+                .build();
     }
 }

@@ -5,6 +5,7 @@ import com.example.DastyorBot.enums.AcctiveStatus;
 import com.example.DastyorBot.enums.CarType;
 import com.example.DastyorBot.enums.SelectedPurchaseType;
 import jakarta.persistence.*;
+import jakarta.ws.rs.DefaultValue;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,7 @@ public class  AutomobileEntity{
     private String username;
     private String description;
     @Column(name = "created_date_time")
+    @DefaultValue("now")
     private LocalDateTime createdDateTime;
     private Double latitude;
     private Double longitude;
@@ -44,4 +46,6 @@ public class  AutomobileEntity{
     private LocalTime startTime;
     @Column(name = "end_time")
     private LocalTime endTime;
+    @Column(name = "ad_creator_chat_id")
+    private String adCreatorChatId;
 }

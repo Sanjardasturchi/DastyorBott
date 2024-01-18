@@ -21,4 +21,16 @@ public interface AutoConstant {
     String GET_ALL_AVTO="Hamma avtolarni olish";
     String SHOW_ALL_AVTO="Hamma avtolarni ko'rish";
     String SHOW_BY_ID="Id orqali topish";
+    String CHOOSING_CITY="Shaharni tanlang:";
+    String CHOOSING_CAR_TYPE="Mashina turini tanlang:";
+    String ENTERING_BRAND_NAME="Automobile brand nomini kiriting:\nYoki Ortga tugmasini bosib ortga qayting!";
+    String ENTERING_MODEL = "Automobile modelini kiriting:\nYoki Ortga tugmasini bosib ortga qayting!";
+    String ENTERING_PRICE = "Automobile narxini kiriting(5 000$ 5_000$ 5.000$ 5000$):\nYoki Ortga tugmasini bosib ortga qayting!";
+    String ENTERING_PHONE = "Automobile egasini telefon raqamini kiriting:\nYoki Ortga tugmasini bosib ortga qayting!";
+    String ENTERING_USERNAME = "Automobile egasini (username)ni kiriting:\nYoki Ortga tugmasini bosib ortga qayting!";
+    String ENTERING_DESCRIPTION ="Automobile haqida qo'shimcha ma'lumotni kiriting:\nYoki Ortga tugmasini bosib ortga qayting!" ;
+    String ENTERING_DISTRICT = "Tumanni kiriting:\nYoki Ortga tugmasini bosib ortga qayting!\nYoki Keyingisi tugmasini bosib keyingi bosqichga o'ting!";
+    String ENTERING_START_TIME = "Murojat qilish mumkin bo'lgan vaqtni boshlanishini tanlang:";
+    String ENTERING_END_TIME = "Murojat qilish mumkin bo'lgan vaqtni tugashini tanlang:";
+    String SUCCESSFULLY_FINISHED = "E'lon qo'shish muvvaffaqiyatli amalga oshirildi!:";
 }

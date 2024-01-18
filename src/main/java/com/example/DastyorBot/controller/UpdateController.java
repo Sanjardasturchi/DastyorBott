@@ -30,6 +30,7 @@ import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaVideo;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -101,6 +102,7 @@ public class UpdateController extends AbstractUpdateController {
         }
     }
 
+
     private void messageUser(Update update, ProfileDTO currentProfile) {
         Message message = update.getMessage();
         String chatId = message.getChatId().toString();
@@ -116,6 +118,7 @@ public class UpdateController extends AbstractUpdateController {
                 profile.setRole(ProfileRole.USER);
                 profile.setAcctiveStatus(AcctiveStatus.ACCTIVE);
                 profile.setCurrentStep("Menu");
+                profile.setCreatedDateTime(LocalDateTime.now());
                 if (profileService.save(profile).getId() != null) {
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setText("Muvaffaqqiyatli ro'yxatdan o'tdingiz!");
@@ -142,7 +145,7 @@ public class UpdateController extends AbstractUpdateController {
             Message message1 = update.getMessage();
             String text = message1.getText();
             if (text.equals("/start")) {
-                profileService.changeStep("Menu", chatId);
+                profileService.changeStep(chatId,"Menu");
                 SendMessage editMessageText = new SendMessage();
                 editMessageText.setText("Menu");
                 editMessageText.setChatId(chatId);
@@ -157,7 +160,7 @@ public class UpdateController extends AbstractUpdateController {
             if (currentProfile.getCurrentStep().equals(AutoConstant.AVTO_BOUGHT)) {
 
                 if (text.equals(CommonConstants.BACK)) {
-                    profileService.changeStep(AutoConstant.AVTO, chatId);
+                    profileService.changeStep(chatId,AutoConstant.AVTO);
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setReplyMarkup(AvtoMarksUps.menu());
                     sendMessage.setChatId(chatId);
@@ -276,7 +279,7 @@ public class UpdateController extends AbstractUpdateController {
                 }
             } else if (currentProfile.getCurrentStep().equals(AutoConstant.AVTO_RENT)) {
                 if (text.equals(CommonConstants.BACK)) {
-                    profileService.changeStep(AutoConstant.AVTO, chatId);
+                    profileService.changeStep(chatId,AutoConstant.AVTO);
                     SendMessage sendMessage = new SendMessage();
                     sendMessage.setReplyMarkup(AvtoMarksUps.menu());
                     sendMessage.setChatId(chatId);
@@ -396,17 +399,18 @@ public class UpdateController extends AbstractUpdateController {
             executeMessage(new SendMessage(chatId, "Kechirasiz bu botga faqat adminalar murojat qila oladi!"));
         } else if (currentProfile.getRole().equals(ProfileRole.ADMIN)) {
             if (message.hasText() && message.getText().equals("/start")) {
-                profileService.changeStep("Menu", chatId);
+                profileService.changeStep(chatId,"Menu");
                 SendMessage sendMessage = new SendMessage(chatId, "Menu");
-                sendMessage.setReplyMarkup(markUps.menu());
+                sendMessage.setReplyMarkup(MarkUps.menu());
                 executeMessage(sendMessage);
                 return;
             }
+
             if (currentProfile.getCurrentStep().equals(AutoConstant.ADD_PHOTO_TO_AVTO)) {
                 if (message.hasText()) {
                     String text1 = message.getText();
                     if (text1.equals(CommonConstants.BACK)) {
-                        profileService.changeStep(AutoConstant.AVTO, chatId);
+                        profileService.changeStep(chatId,AutoConstant.AVTO);
                         SendMessage sendMessage = new SendMessage(chatId, AutoConstant.AVTO);
                         sendMessage.setReplyMarkup(AvtoMarkUpsForAdmin.menuForAdmin());
                         executeMessage(new SendMessage(chatId, "Avtomobilga surat joylash bekor qilindi!"));
@@ -425,7 +429,7 @@ public class UpdateController extends AbstractUpdateController {
                                             + "\n Username: @" + avtomobile.getUsername() + " bo'lgan avtomobilega surat joylamoqdasiz!";
                                     currentProfile.setChangingElementId(avtomobile.getId());
                                     executeMessage(new SendMessage(chatId, attention));
-                                    profileService.changingElementId(avtomobile.getId(), chatId);
+                                    profileService.changingElementId(avtomobile.getId(),chatId);
                                     return;
                                 }
                             }
@@ -456,7 +460,7 @@ public class UpdateController extends AbstractUpdateController {
                 if (message.hasText()) {
                     String text1 = message.getText();
                     if (text1.equals(CommonConstants.BACK)) {
-                        profileService.changeStep(AutoConstant.AVTO, chatId);
+                        profileService.changeStep(chatId,AutoConstant.AVTO);
                         SendMessage sendMessage = new SendMessage(chatId, AutoConstant.AVTO);
                         sendMessage.setReplyMarkup(AvtoMarkUpsForAdmin.menuForAdmin());
                         executeMessage(new SendMessage(chatId, "Avtomobilga video joylash bekor qilindi!"));
@@ -474,7 +478,7 @@ public class UpdateController extends AbstractUpdateController {
                                             + "\n Username: @" + avtomobile.getUsername() + " bo'lgan avtomobilega surat joylamoqdasiz!";
                                     currentProfile.setChangingElementId(avtomobile.getId());
                                     executeMessage(new SendMessage(chatId, attention));
-                                    profileService.changingElementId(avtomobile.getId(), chatId);
+                                    profileService.changingElementId(avtomobile.getId(),chatId);
                                     return;
                                 }
                             }
@@ -495,6 +499,129 @@ public class UpdateController extends AbstractUpdateController {
                         }
                     }
                 }
+            } else if (currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_BRAND_NAME)) {
+                if (message.getText().equals(CommonConstants.BACK)) {
+                    profileService.changeStep(chatId,AutoConstant.CHOOSING_CAR_TYPE);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.CHOOSING_CAR_TYPE);
+                    sendMessage.setReplyMarkup(AvtoMarkUpsForAdmin.chooseCarType());
+                    executeMessage(sendMessage);
+                    return;
+                }
+                avtoService.setBrand(currentProfile.getChangingElementId(), message.getText());
+                profileService.changeStep(chatId, AutoConstant.ENTERING_MODEL);
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(chatId);
+                sendMessage.setText(AutoConstant.ENTERING_MODEL);
+                executeMessage(sendMessage);
+            } else if (currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_MODEL)) {
+                if (message.getText().equals(CommonConstants.BACK)) {
+                    profileService.changeStep(chatId,AutoConstant.ENTERING_BRAND_NAME);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.ENTERING_BRAND_NAME);
+                    executeMessage(sendMessage);
+                    return;
+                }
+                avtoService.setModel(currentProfile.getChangingElementId(), message.getText());
+                profileService.changeStep(chatId, AutoConstant.ENTERING_PRICE);
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(chatId);
+                sendMessage.setText(AutoConstant.ENTERING_PRICE);
+                executeMessage(sendMessage);
+            } else if (currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_PRICE)) {
+                if (message.getText().equals(CommonConstants.BACK)) {
+                    profileService.changeStep(chatId,AutoConstant.ENTERING_MODEL);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.ENTERING_MODEL);
+                    executeMessage(sendMessage);
+                    return;
+                }
+                Boolean result = avtoService.setPrice(currentProfile.getChangingElementId(), message.getText());
+                if (result) {
+                    profileService.changeStep(chatId, AutoConstant.ENTERING_PHONE);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.ENTERING_PHONE);
+                    executeMessage(sendMessage);
+                } else {
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText("Iltimos faqat son kiriting!\nYoki Ortga tugmasini bosing!");
+                    executeMessage(sendMessage);
+                }
+            } else if (currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_PHONE)) {
+                if (message.getText().equals(CommonConstants.BACK)) {
+                    profileService.changeStep(chatId,AutoConstant.ENTERING_PRICE);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.ENTERING_PRICE);
+                    executeMessage(sendMessage);
+                    return;
+                }
+                avtoService.setPhone(currentProfile.getChangingElementId(), message.getText());
+                profileService.changeStep(chatId, AutoConstant.ENTERING_USERNAME);
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(chatId);
+                sendMessage.setText(AutoConstant.ENTERING_USERNAME);
+                executeMessage(sendMessage);
+            } else if (currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_USERNAME)) {
+                if (message.getText().equals(CommonConstants.BACK)) {
+                    profileService.changeStep(chatId,AutoConstant.ENTERING_PHONE);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.ENTERING_PHONE);
+                    executeMessage(sendMessage);
+                    return;
+                }
+                avtoService.setUsername(currentProfile.getChangingElementId(), message.getText());
+                profileService.changeStep(chatId, AutoConstant.ENTERING_DESCRIPTION);
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(chatId);
+                sendMessage.setText(AutoConstant.ENTERING_DESCRIPTION);
+                executeMessage(sendMessage);
+            } else if (currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_DESCRIPTION)) {
+                if (message.getText().equals(CommonConstants.BACK)) {
+                    profileService.changeStep(chatId,AutoConstant.ENTERING_USERNAME);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.ENTERING_USERNAME);
+                    executeMessage(sendMessage);
+                    return;
+                }
+                avtoService.setDescription(currentProfile.getChangingElementId(), message.getText());
+                profileService.changeStep(chatId, AutoConstant.ENTERING_DISTRICT);
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(chatId);
+                sendMessage.setText(AutoConstant.ENTERING_DISTRICT);
+                sendMessage.setReplyMarkup(MarkUps.backWithNextButtons());
+                executeMessage(sendMessage);
+            } else if (currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_DISTRICT)) {
+                if (message.getText().equals(CommonConstants.BACK)) {
+                    profileService.changeStep(chatId,AutoConstant.ENTERING_PHONE);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.ENTERING_PHONE);
+                    executeMessage(sendMessage);
+                    return;
+                } else if (message.getText().equals(CommonConstants.NEXT)) {
+                    profileService.changeStep(chatId,AutoConstant.ENTERING_START_TIME);
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(AutoConstant.ENTERING_START_TIME);
+                    sendMessage.setReplyMarkup(AvtoMarkUpsForAdmin.times());
+                    executeMessage(sendMessage);
+                    return;
+                }
+                avtoService.setDistrict(currentProfile.getChangingElementId(), message.getText());
+                profileService.changeStep(chatId, AutoConstant.ENTERING_START_TIME);
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(chatId);
+                sendMessage.setText(AutoConstant.ENTERING_START_TIME);
+                sendMessage.setReplyMarkup(AvtoMarkUpsForAdmin.times());
+                executeMessage(sendMessage);
             }
         }
     }
@@ -544,61 +671,164 @@ public class UpdateController extends AbstractUpdateController {
         String data = update.getCallbackQuery().getData();
         if (text.equals("Menu") && currentProfile.getCurrentStep().equals(CommonConstants.MENU)) {
             if (data.equals(AutoConstant.AVTO)) {
-                profileService.changeStep(AutoConstant.AVTO, chatId);
+                profileService.changeStep(chatId,AutoConstant.AVTO);
                 EditMessageText editMessageText = new EditMessageText();
                 editMessageText.setChatId(chatId);
                 editMessageText.setText(AutoConstant.AVTO);
                 editMessageText.setReplyMarkup(AvtoMarkUpsForAdmin.menuForAdmin());
                 editMessageText.setMessageId(message.getMessageId());
-
-                try {
-                    messageSender.execute(editMessageText);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
+                executeEditMessageText(editMessageText);
             }
         } else if (text.equals(AutoConstant.AVTO) && currentProfile.getCurrentStep().equals(AutoConstant.AVTO)) {
             if (data.equals(AutoConstant.ADD_AVTO)) {
-                profileService.changeStep(AutoConstant.ADD_AVTO, chatId);
+                profileService.changeStep(chatId,CommonConstants.ACCEPT_TO_CREAT_NEW_ANNOUNCEMENT);
                 EditMessageText editMessageText = new EditMessageText();
                 editMessageText.setChatId(chatId);
-                editMessageText.setText(AutoConstant.ADD_AVTO);
+                editMessageText.setText(CommonConstants.ACCEPT_TO_CREAT_NEW_ANNOUNCEMENT);
+                editMessageText.setReplyMarkup(AvtoMarksUps.acceptToCreat());
                 editMessageText.setMessageId(message.getMessageId());
+                executeEditMessageText(editMessageText);
+                return;
+
 
             } else if (data.equals(AutoConstant.ADD_PHOTO_TO_AVTO)) {
-                profileService.changeStep(AutoConstant.ADD_PHOTO_TO_AVTO, chatId);
+                profileService.changeStep(chatId,AutoConstant.ADD_PHOTO_TO_AVTO);
                 EditMessageText editMessageText = new EditMessageText();
                 editMessageText.setChatId(chatId);
                 editMessageText.setText(AutoConstant.ADD_PHOTO_TO_AVTO);
                 editMessageText.setMessageId(message.getMessageId());
 
-                try {
-                    messageSender.execute(editMessageText);
-                    executeMessage(new SendMessage(chatId, "Avtomobil Id sini kiriting"));
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
+                executeEditMessageText(editMessageText);
+                executeMessage(new SendMessage(chatId, "Avtomobil Id sini kiriting"));
             } else if (data.equals(AutoConstant.ADD_VIDEO_TO_AVTO)) {
-                profileService.changeStep(AutoConstant.ADD_VIDEO_TO_AVTO, chatId);
+                profileService.changeStep(chatId,AutoConstant.ADD_VIDEO_TO_AVTO);
                 EditMessageText editMessageText = new EditMessageText();
                 editMessageText.setChatId(chatId);
                 editMessageText.setText(AutoConstant.ADD_VIDEO_TO_AVTO);
                 editMessageText.setMessageId(message.getMessageId());
-
-                try {
-                    messageSender.execute(editMessageText);
-                    executeMessage(new SendMessage(chatId, "Avtomobil Id sini kiriting"));
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
+                executeEditMessageText(editMessageText);
+                executeMessage(new SendMessage(chatId, "Avtomobil Id sini kiriting"));
             } else if (data.equals(AutoConstant.BLOCK_AVTO)) {
-                profileService.changeStep(AutoConstant.ADD_VIDEO_TO_AVTO, chatId);
+                profileService.changeStep(chatId,AutoConstant.ADD_VIDEO_TO_AVTO);
                 EditMessageText editMessageText = new EditMessageText();
                 editMessageText.setChatId(chatId);
                 editMessageText.setText(AutoConstant.ADD_VIDEO_TO_AVTO);
                 editMessageText.setMessageId(message.getMessageId());
 
             }
+        }else if (data.equals(CommonConstants.ACCEPT)
+                &&currentProfile.getCurrentStep().equals(CommonConstants.ACCEPT_TO_CREAT_NEW_ANNOUNCEMENT)) {
+            profileService.changeStep(chatId,AutoConstant.CHOOSING_CITY);
+
+            EditMessageText editMessageText = new EditMessageText();
+            editMessageText.setChatId(chatId);
+            editMessageText.setText("Yangi e'lon id raqami: " + avtoService.createAuto(currentProfile.getChatId(), new AutomobileDTO()).getId());
+            editMessageText.setMessageId(message.getMessageId());
+            executeEditMessageText(editMessageText);
+
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setText(AutoConstant.CHOOSING_CITY);
+            sendMessage.setReplyMarkup(AvtoMarkUpsForAdmin.choosingCity());
+            executeMessage(sendMessage);
+            return;
+        } else if (data.equals(CommonConstants.NON_ACCEPTANCE)
+                &&currentProfile.getCurrentStep().equals(CommonConstants.ACCEPT_TO_CREAT_NEW_ANNOUNCEMENT)) {
+            profileService.changeStep(chatId,AutoConstant.AVTO);
+            EditMessageText editMessageText = new EditMessageText();
+            editMessageText.setChatId(chatId);
+            editMessageText.setText(AutoConstant.AVTO);
+            editMessageText.setReplyMarkup(AvtoMarkUpsForAdmin.menuForAdmin());
+            editMessageText.setMessageId(message.getMessageId());
+            executeEditMessageText(editMessageText);
+        } else if (message.getText().equals(AutoConstant.CHOOSING_CITY)
+                && currentProfile.getCurrentStep().equals(AutoConstant.CHOOSING_CITY)) {
+            if (data.equals(CommonConstants.BACK)) {
+                profileService.changeStep(chatId,AutoConstant.AVTO);
+                EditMessageText editMessage = new EditMessageText();
+                editMessage.setChatId(chatId);
+                editMessage.setText(AutoConstant.AVTO);
+                editMessage.setReplyMarkup(AvtoMarkUpsForAdmin.menuForAdmin());
+                editMessage.setMessageId(message.getMessageId());
+                executeEditMessageText(editMessage);
+                return;
+            }
+            avtoService.setCity(currentProfile.getChangingElementId(), data);
+            profileService.changeStep(chatId,AutoConstant.CHOOSING_CAR_TYPE);
+
+            EditMessageText editMessageText = new EditMessageText();
+            editMessageText.setChatId(chatId);
+            editMessageText.setText(AutoConstant.CHOOSING_CAR_TYPE);
+            editMessageText.setReplyMarkup(AvtoMarkUpsForAdmin.chooseCarType());
+            editMessageText.setMessageId(message.getMessageId());
+            executeEditMessageText(editMessageText);
+            return;
+        } else if (message.getText().equals(AutoConstant.CHOOSING_CAR_TYPE)
+                && currentProfile.getCurrentStep().equals(AutoConstant.CHOOSING_CAR_TYPE)) {
+            if (data.equals(CommonConstants.BACK)) {
+                profileService.changeStep(chatId,AutoConstant.CHOOSING_CITY);
+                EditMessageText editMessage = new EditMessageText();
+                editMessage.setChatId(chatId);
+                editMessage.setText(AutoConstant.CHOOSING_CITY);
+                editMessage.setReplyMarkup(AvtoMarkUpsForAdmin.choosingCity());
+                editMessage.setMessageId(message.getMessageId());
+                executeEditMessageText(editMessage);
+                return;
+            }
+            avtoService.setCarType(currentProfile.getChangingElementId(), data);
+            profileService.changeStep(chatId,AutoConstant.ENTERING_BRAND_NAME);
+
+            DeleteMessage deleteMessage = new DeleteMessage();
+            deleteMessage.setChatId(chatId);
+            deleteMessage.setMessageId(message.getMessageId());
+
+            SendMessage sendMessage = new SendMessage(chatId, AutoConstant.ENTERING_BRAND_NAME);
+            sendMessage.setReplyMarkup(MarkUps.backButton());
+            executeMessage(sendMessage);
+            executeDeleteMessage(deleteMessage);
+            return;
+        } else if (message.getText().equals(AutoConstant.ENTERING_START_TIME)
+                && currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_START_TIME)) {
+            if (data.equals(CommonConstants.BACK)) {
+                profileService.changeStep(chatId,AutoConstant.ENTERING_DISTRICT);
+                EditMessageText editMessage = new EditMessageText();
+                editMessage.setChatId(chatId);
+                editMessage.setText(AutoConstant.ENTERING_DISTRICT);
+                editMessage.setMessageId(message.getMessageId());
+                executeEditMessageText(editMessage);
+                return;
+            }
+            avtoService.setStartTime(currentProfile.getChangingElementId(), data);
+            profileService.changeStep(chatId,AutoConstant.ENTERING_END_TIME);
+
+            EditMessageText editMessageText = new EditMessageText();
+            editMessageText.setChatId(chatId);
+            editMessageText.setText(AutoConstant.ENTERING_END_TIME);
+            editMessageText.setReplyMarkup(AvtoMarkUpsForAdmin.times());
+            editMessageText.setMessageId(message.getMessageId());
+            executeEditMessageText(editMessageText);
+        } else if (message.getText().equals(AutoConstant.ENTERING_END_TIME)
+                && currentProfile.getCurrentStep().equals(AutoConstant.ENTERING_END_TIME)) {
+            if (data.equals(CommonConstants.BACK)) {
+                profileService.changeStep(chatId,AutoConstant.ENTERING_START_TIME);
+                EditMessageText editMessage = new EditMessageText();
+                editMessage.setChatId(chatId);
+                editMessage.setText(AutoConstant.ENTERING_START_TIME);
+                editMessage.setReplyMarkup(AvtoMarkUpsForAdmin.times());
+                editMessage.setMessageId(message.getMessageId());
+                executeEditMessageText(editMessage);
+                return;
+            }
+            avtoService.setEndTime(currentProfile.getChangingElementId(), data);
+            profileService.changeStep(chatId,AutoConstant.AVTO);
+            executeDeleteMessage(new DeleteMessage(chatId,message.getMessageId()));
+            SendMessage sendMessage = new SendMessage(chatId,AutoConstant.SUCCESSFULLY_FINISHED);
+            sendMessage.setReplyMarkup(MarkUps.start());
+            executeMessage(sendMessage);
+            SendMessage sendMessage1=new SendMessage(chatId,AutoConstant.AVTO);
+            sendMessage1.setReplyMarkup(AvtoMarkUpsForAdmin.menuForAdmin());
+            executeMessage(sendMessage1);
+            return;
         }
     }
 
@@ -624,7 +854,7 @@ public class UpdateController extends AbstractUpdateController {
 
     private void autoBought(Update update, String chatId, ProfileDTO currentProfile) {
         profileService.changeStep(AutoConstant.AVTO_BOUGHT, currentProfile.getChatId());
-        profileService.changePurchaseType(SelectedPurchaseType.SALE, chatId);
+        profileService.changePurchaseType(SelectedPurchaseType.SALE,chatId);
 
         EditMessageText editMessageText = new EditMessageText();
         editMessageText.setChatId(chatId);
@@ -634,14 +864,14 @@ public class UpdateController extends AbstractUpdateController {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("Yoki (Ortga) tugmasini bosib ortga qayting!");
         sendMessage.setChatId(chatId);
-        sendMessage.setReplyMarkup(markUps.backButton());
+        sendMessage.setReplyMarkup(MarkUps.backButton());
         executeEditMessageText(editMessageText);
         executeMessage(sendMessage);
     }
 
     private void autoRent(Update update, String chatId, ProfileDTO currentProfile) {
         profileService.changeStep(AutoConstant.AVTO_RENT, currentProfile.getChatId());
-        profileService.changePurchaseType(SelectedPurchaseType.RENT, chatId);
+        profileService.changePurchaseType(SelectedPurchaseType.RENT,chatId);
 
         EditMessageText editMessageText = new EditMessageText();
         editMessageText.setChatId(chatId);
@@ -651,7 +881,7 @@ public class UpdateController extends AbstractUpdateController {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("Yoki (Ortga) tugmasini bosib ortga qayting!");
         sendMessage.setChatId(chatId);
-        sendMessage.setReplyMarkup(markUps.backButton());
+        sendMessage.setReplyMarkup(MarkUps.backButton());
         executeEditMessageText(editMessageText);
         executeMessage(sendMessage);
     }
