@@ -1,14 +1,16 @@
 package com.example.DastyorBot.entity;
 
 import com.example.DastyorBot.enums.AcctiveStatus;
+import com.example.DastyorBot.enums.Language;
 import com.example.DastyorBot.enums.ProfileRole;
 import com.example.DastyorBot.enums.SelectedPurchaseType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
-
+@ToString
 @Setter
 @Getter
 @Entity
@@ -39,4 +41,6 @@ public class ProfileEntity{
     private SelectedPurchaseType selectedPurchaseType;
     @Column(name = "changing_element_id")
     private Integer changingElementId;
+    @Enumerated(EnumType.STRING)
+    private Language language=Language.uz;
 }

@@ -7,4 +7,8 @@ public interface CommonConstants {
     String ACCEPT="✅";
     String NON_ACCEPTANCE="❌";
     String NEXT = "Keyingisi";
+    String SALE="Sotuv";
+    String RENT="Ijara";
+    String ALL="Hammasi";
+    String language="/language";
 }

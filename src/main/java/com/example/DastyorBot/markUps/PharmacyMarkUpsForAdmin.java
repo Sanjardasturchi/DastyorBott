@@ -1,86 +1,73 @@
 package com.example.DastyorBot.markUps;
 
-import com.example.DastyorBot.constant.AutoConstant;
 import com.example.DastyorBot.constant.CommonConstants;
-import com.example.DastyorBot.enums.SelectedPurchaseType;
-import lombok.Getter;
-import org.springframework.stereotype.Component;
+import com.example.DastyorBot.constant.PharmacyConstants;
+import com.example.DastyorBot.enums.PharmacyType;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.LinkedList;
 import java.util.List;
 
-@Component
-public class AvtoMarkUpsForAdmin {
-    public static final List<String> cities = List.of("Toshkent", "Chirchiq", "Angren", "Sirdaryo", "Bekobod", "Olmaliq",
-            "Quvasoy", "Qarshi", "Shahrisabz", "Urganch", "Navoiy", "Jizzax",
-            "Termiz", "Margʻilon", "Qoʻqon", "Buxoro", "Beruni",
-            "Fargʻona", "Nukus", "Andijon", "Samarqand", "Namangan");
-    public static final List<String> timeList = List.of("00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
-            "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
-            "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
-            "18:00", "19:00", "20:00", "21:00", "22:00", "23:00");
+import static com.example.DastyorBot.markUps.AvtoMarkUpsForAdmin.timeList;
 
+public class PharmacyMarkUpsForAdmin {
     public static InlineKeyboardMarkup menuForAdmin() {
         List<InlineKeyboardButton> buttons = new LinkedList<>();
         List<List<InlineKeyboardButton>> rowList = new LinkedList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
 
-        button.setText(AutoConstant.ADD_AVTO);
-        button.setCallbackData(AutoConstant.ADD_AVTO);
+        button.setText(PharmacyConstants.CREAT);
+        button.setCallbackData(PharmacyConstants.CREAT);
         buttons.add(button);
         rowList.add(buttons);
         button = new InlineKeyboardButton();
         buttons = new LinkedList<>();
 
-        button.setText(AutoConstant.ADD_PHOTO_TO_AVTO);
-        button.setCallbackData(AutoConstant.ADD_PHOTO_TO_AVTO);
+        button.setText(PharmacyConstants.ADD_PHOTO);
+        button.setCallbackData(PharmacyConstants.ADD_PHOTO);
         buttons.add(button);
         rowList.add(buttons);
+
         button = new InlineKeyboardButton();
         buttons = new LinkedList<>();
 
-        button.setText(AutoConstant.ADD_VIDEO_TO_AVTO);
-        button.setCallbackData(AutoConstant.ADD_VIDEO_TO_AVTO);
+        button.setText(PharmacyConstants.ADD_VIDEO);
+        button.setCallbackData(PharmacyConstants.ADD_VIDEO);
         buttons.add(button);
         rowList.add(buttons);
+
+        button = new InlineKeyboardButton();
+        buttons = new LinkedList<>();
+        button.setText(PharmacyConstants.MAKE_BLOCK);
+        button.setCallbackData(PharmacyConstants.MAKE_BLOCK);
+        buttons.add(button);
+        rowList.add(buttons);
+
         button = new InlineKeyboardButton();
         buttons = new LinkedList<>();
 
-        button.setText(AutoConstant.BLOCK_AVTO);
-        button.setCallbackData(AutoConstant.BLOCK_AVTO);
+        button.setText(PharmacyConstants.MAKE_UNBLOCK);
+        button.setCallbackData(PharmacyConstants.MAKE_UNBLOCK);
         buttons.add(button);
         rowList.add(buttons);
+
         button = new InlineKeyboardButton();
         buttons = new LinkedList<>();
 
-        button.setText(AutoConstant.UNBLOCK_AVTO);
-        button.setCallbackData(AutoConstant.UNBLOCK_AVTO);
+        button.setText(PharmacyConstants.GET_ALL);
+        button.setCallbackData(PharmacyConstants.GET_ALL);
         buttons.add(button);
         rowList.add(buttons);
+
         button = new InlineKeyboardButton();
         buttons = new LinkedList<>();
 
-        button.setText(AutoConstant.GET_ALL_AVTO);
-        button.setCallbackData(AutoConstant.GET_ALL_AVTO);
+        button.setText(PharmacyConstants.GET_BY_ID);
+        button.setCallbackData(PharmacyConstants.GET_BY_ID);
         buttons.add(button);
         rowList.add(buttons);
-        button = new InlineKeyboardButton();
-        buttons = new LinkedList<>();
 
-//        button.setText(AutoConstant.SHOW_ALL_AVTO);
-//        button.setCallbackData(AutoConstant.SHOW_ALL_AVTO);
-//        buttons.add(button);
-//        rowList.add(buttons);
-//        button = new InlineKeyboardButton();
-//        buttons = new LinkedList<>();
-
-        button.setText(AutoConstant.SHOW_BY_ID);
-        button.setCallbackData(AutoConstant.SHOW_BY_ID);
-        buttons.add(button);
-        rowList.add(buttons);
         button = new InlineKeyboardButton();
         buttons = new LinkedList<>();
 
@@ -91,45 +78,39 @@ public class AvtoMarkUpsForAdmin {
         return new InlineKeyboardMarkup(rowList);
     }
 
-    public static InlineKeyboardMarkup choosingCity() {
+    public static InlineKeyboardMarkup acceptToCreat() {
         List<InlineKeyboardButton> buttons = new LinkedList<>();
         List<List<InlineKeyboardButton>> rowList = new LinkedList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
 
-        int count = 0;
-        for (String city : cities) {
-            count++;
-            button.setText(city);
-            button.setCallbackData(city);
+        button.setText(PharmacyConstants.ACCEPT);
+        button.setCallbackData(PharmacyConstants.ACCEPT);
+        buttons.add(button);
+        rowList.add(buttons);
+        button = new InlineKeyboardButton();
+        buttons = new LinkedList<>();
 
-            buttons.add(button);
-            button = new InlineKeyboardButton();
-            if (count % 2 == 0 || count == cities.size() - 1) {
-                rowList.add(buttons);
-                buttons = new LinkedList<>();
-            }
-        }
-        button.setText(CommonConstants.BACK);
-        button.setCallbackData(CommonConstants.BACK);
+        button.setText(PharmacyConstants.NON_ACCEPT);
+        button.setCallbackData(PharmacyConstants.NON_ACCEPT);
         buttons.add(button);
         rowList.add(buttons);
         return new InlineKeyboardMarkup(rowList);
     }
 
-    public static InlineKeyboardMarkup chooseCarType() {
+    public static InlineKeyboardMarkup typeOfPharmacy() {
         List<InlineKeyboardButton> buttons = new LinkedList<>();
         List<List<InlineKeyboardButton>> rowList = new LinkedList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
 
-        button.setText(AutoConstant.CARS);
-        button.setCallbackData(AutoConstant.CARS);
+        button.setText("Dorixona  \uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66");
+        button.setCallbackData(PharmacyConstants.PHARMACY_FOR_PERSON);
         buttons.add(button);
         rowList.add(buttons);
         button = new InlineKeyboardButton();
         buttons = new LinkedList<>();
 
-        button.setText(AutoConstant.TRUCKS);
-        button.setCallbackData(AutoConstant.TRUCKS);
+        button.setText("Veterinar dorixonasi  \uD83D\uDC08");
+        button.setCallbackData(PharmacyConstants.PHARMACY_FOR_ANIMAL);
         buttons.add(button);
         rowList.add(buttons);
         button = new InlineKeyboardButton();
@@ -141,13 +122,13 @@ public class AvtoMarkUpsForAdmin {
         rowList.add(buttons);
         return new InlineKeyboardMarkup(rowList);
     }
-
     public static InlineKeyboardMarkup times() {
         List<InlineKeyboardButton> buttons = new LinkedList<>();
         List<List<InlineKeyboardButton>> rowList = new LinkedList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
 
         int count = 0;
+        // timeList(8:00,9:00,10:00)
         for (String time : timeList) {
             count++;
             button.setText(time);
@@ -166,6 +147,4 @@ public class AvtoMarkUpsForAdmin {
         rowList.add(buttons);
         return new InlineKeyboardMarkup(rowList);
     }
-
-
 }

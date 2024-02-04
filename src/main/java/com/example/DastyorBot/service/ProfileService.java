@@ -4,14 +4,18 @@ package com.example.DastyorBot.service;
 import com.example.DastyorBot.constant.CommonConstants;
 import com.example.DastyorBot.dto.ProfileDTO;
 import com.example.DastyorBot.entity.ProfileEntity;
+import com.example.DastyorBot.entity.mediaEntity.PharmacyMediaEntity;
 import com.example.DastyorBot.enums.AcctiveStatus;
+import com.example.DastyorBot.enums.MediaType;
 import com.example.DastyorBot.enums.ProfileRole;
 import com.example.DastyorBot.enums.SelectedPurchaseType;
 import com.example.DastyorBot.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 
-import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class ProfileService {
@@ -64,10 +68,23 @@ public class ProfileService {
         dto.setLatitude(entity.getLatitude());
         dto.setLongitude(entity.getLongitude());
         dto.setSelectedPurchaseType(entity.getSelectedPurchaseType());
+        dto.setLanguage(entity.getLanguage());
         return dto;
     }
 
     public void changePurchaseType(SelectedPurchaseType selectedPurchaseType, String chatId) {
         profileRepository.changePurchaseType(selectedPurchaseType,chatId);
     }
+
+    public List<ProfileDTO> getAll() {
+        List<ProfileDTO> dtos=new LinkedList<>();
+        Iterable<ProfileEntity> all = profileRepository.findAll();
+        for (ProfileEntity profileEntity : all) {
+            dtos.add(toDTO(profileEntity));
+        }
+        return dtos;
+    }
+
+
+
 }

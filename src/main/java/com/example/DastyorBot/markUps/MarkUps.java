@@ -1,6 +1,7 @@
 package com.example.DastyorBot.markUps;
 
 import com.example.DastyorBot.constant.*;
+import com.example.DastyorBot.enums.SelectedPurchaseType;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -46,60 +47,62 @@ public class MarkUps {
     }
 
     public static InlineKeyboardMarkup menu() {
-        List<InlineKeyboardButton> buttonsRow=new LinkedList<>();
-        List<List<InlineKeyboardButton>> rowList=new LinkedList<>();
+        List<InlineKeyboardButton> buttonsRow = new LinkedList<>();
+        List<List<InlineKeyboardButton>> rowList = new LinkedList<>();
 
-        InlineKeyboardButton button=new InlineKeyboardButton();
+        InlineKeyboardButton button = new InlineKeyboardButton();
+
+        button.setText(PharmacyConstants.PHARMACY);
+        button.setCallbackData(PharmacyConstants.PHARMACY);
+
+        buttonsRow.add(button);
+        rowList.add(buttonsRow);
+        button = new InlineKeyboardButton();
+        buttonsRow = new LinkedList<>();
+
+        button.setText(HospitalConstants.HOSPITAL);
+        button.setCallbackData(HospitalConstants.HOSPITAL);
+
+        buttonsRow.add(button);
+        rowList.add(buttonsRow);
+        button = new InlineKeyboardButton();
+        buttonsRow = new LinkedList<>();
+
         button.setText(AutoConstant.AVTO);
         button.setCallbackData(AutoConstant.AVTO);
 
         buttonsRow.add(button);
         rowList.add(buttonsRow);
-        button=new InlineKeyboardButton();
-        buttonsRow=new LinkedList<>();
+        button = new InlineKeyboardButton();
+        buttonsRow = new LinkedList<>();
 
         button.setText(AutoServiceConstants.AVTO_SERVICE);
         button.setCallbackData(AutoServiceConstants.AVTO_SERVICE);
 
         buttonsRow.add(button);
         rowList.add(buttonsRow);
-        button=new InlineKeyboardButton();
-        buttonsRow=new LinkedList<>();
+        button = new InlineKeyboardButton();
+        buttonsRow = new LinkedList<>();
 
         button.setText(AutoConstant.AVTO_SPARE_PARTS_STORES);
         button.setCallbackData(AutoConstant.AVTO_SPARE_PARTS_STORES);
 
         buttonsRow.add(button);
         rowList.add(buttonsRow);
-        button=new InlineKeyboardButton();
-        buttonsRow=new LinkedList<>();
+        button = new InlineKeyboardButton();
+        buttonsRow = new LinkedList<>();
 
         button.setText(HomeConstants.HOME);
         button.setCallbackData(HomeConstants.HOME);
 
         buttonsRow.add(button);
         rowList.add(buttonsRow);
-        button=new InlineKeyboardButton();
-        buttonsRow=new LinkedList<>();
+        button = new InlineKeyboardButton();
+        buttonsRow = new LinkedList<>();
 
         button.setText(HomeServiceConstants.HOME_SERVICE);
         button.setCallbackData(HomeServiceConstants.HOME_SERVICE);
 
-        buttonsRow.add(button);
-        rowList.add(buttonsRow);
-        button=new InlineKeyboardButton();
-        buttonsRow=new LinkedList<>();
-
-        button.setText("Apteka 24/7 \uD83D\uDC8A\uD83C\uDFEA");
-        button.setCallbackData("Apteka 24/7 \uD83D\uDC8A\uD83C\uDFEA");
-
-        buttonsRow.add(button);
-        rowList.add(buttonsRow);
-        button=new InlineKeyboardButton();
-        buttonsRow=new LinkedList<>();
-
-        button.setText(HospitalConstants.HOSPITAL);
-        button.setCallbackData(HospitalConstants.HOSPITAL);
 
 
 
@@ -170,5 +173,42 @@ public class MarkUps {
                 .keyboard(List.of(row))
                 .resizeKeyboard(true)
                 .build();
+    }
+
+    public static InlineKeyboardMarkup choosingSalary() {
+        List<InlineKeyboardButton> buttons = new LinkedList<>();
+        List<List<InlineKeyboardButton>> rowList = new LinkedList<>();
+        InlineKeyboardButton button = new InlineKeyboardButton();
+
+        button.setText(CommonConstants.SALE);
+        button.setCallbackData(SelectedPurchaseType.SALE.name());
+        buttons.add(button);
+        rowList.add(buttons);
+        button = new InlineKeyboardButton();
+        buttons = new LinkedList<>();
+
+        button.setText(CommonConstants.RENT);
+        button.setCallbackData(SelectedPurchaseType.RENT.name());
+        buttons.add(button);
+        rowList.add(buttons);
+        button = new InlineKeyboardButton();
+        buttons = new LinkedList<>();
+
+        button.setText(CommonConstants.ALL);
+        button.setCallbackData(SelectedPurchaseType.ALL.name());
+        buttons.add(button);
+        rowList.add(buttons);
+        return new InlineKeyboardMarkup(rowList);
+    }
+
+    public static InlineKeyboardMarkup inlineBackButton() {
+        List<InlineKeyboardButton> buttons = new LinkedList<>();
+        List<List<InlineKeyboardButton>> rowList = new LinkedList<>();
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText(CommonConstants.BACK);
+        button.setCallbackData(CommonConstants.BACK);
+        buttons.add(button);
+        rowList.add(buttons);
+        return new InlineKeyboardMarkup(rowList);
     }
 }

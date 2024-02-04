@@ -1,7 +1,9 @@
 package com.example.DastyorBot.service.mediaService;
 
 import com.example.DastyorBot.entity.mediaEntity.AutoMediaEntity;
+import com.example.DastyorBot.enums.AcctiveStatus;
 import com.example.DastyorBot.repository.mediaRepository.AutoMediaRepository;
+import com.example.DastyorBot.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,4 +22,6 @@ public class AvtoMediaService {
     public List<AutoMediaEntity> getById(Integer id) {
         return autoMediaRepository.findByCarId(id);
     }
+
+
 }

@@ -1,8 +1,10 @@
 package com.example.DastyorBot.entity;
 
+import com.example.DastyorBot.constant.PharmacyConstants;
 import com.example.DastyorBot.enums.AcctiveStatus;
 import com.example.DastyorBot.enums.PharmacyType;
 import jakarta.persistence.*;
+import jakarta.ws.rs.DefaultValue;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,7 +35,7 @@ public class PharmacyEntity{
     private LocalTime startTime;
     @Column(name = "end_time")
     private LocalTime endTime;
-    @Enumerated(EnumType.STRING)
     @Column(name = "pharmacy_type")
-    private PharmacyType pharmacyType;
+    @DefaultValue(value = PharmacyConstants.PHARMACY_FOR_PERSON)
+    private String pharmacyType;
 }

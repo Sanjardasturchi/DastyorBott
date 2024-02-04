@@ -3,12 +3,15 @@ package com.example.DastyorBot.service;
 import com.example.DastyorBot.constant.AutoConstant;
 import com.example.DastyorBot.dto.AutomobileDTO;
 import com.example.DastyorBot.entity.AutomobileEntity;
+import com.example.DastyorBot.entity.mediaEntity.AutoMediaEntity;
 import com.example.DastyorBot.enums.AcctiveStatus;
 import com.example.DastyorBot.enums.CarType;
+import com.example.DastyorBot.enums.SelectedPurchaseType;
 import com.example.DastyorBot.repository.AutomobileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,7 +66,7 @@ public class AutomobileService {
         dto.setCreatedDateTime(entity.getCreatedDateTime());
         dto.setLatitude(entity.getLatitude());
         dto.setLongitude(entity.getLongitude());
-        dto.setType(entity.getType());
+        dto.setSalaryType(entity.getSalaryType());
         dto.setCity(entity.getCity());
         dto.setDistrict(entity.getDistrict());
         dto.setBrandName(entity.getBrandName());
@@ -72,6 +75,7 @@ public class AutomobileService {
         dto.setPrice(entity.getPrice());
         dto.setStartTime(entity.getStartTime());
         dto.setEndTime(entity.getEndTime());
+        dto.setAdCreatorChatId(entity.getAdCreatorChatId());
         return dto;
     }
 
@@ -79,10 +83,12 @@ public class AutomobileService {
         AutomobileEntity entity = new AutomobileEntity();
         entity.setAdCreatorChatId(profileChatId);
         entity.setAcctiveStatus(AcctiveStatus.BLOCK);
+        entity.setCreatedDateTime(LocalDateTime.now());
         // todo (entity=dto)
         avtoRepository.save(entity);
         dto.setId(entity.getId());
         dto.setAdCreatorChatId(profileChatId);
+        dto.setCreatedDateTime(entity.getCreatedDateTime());
         profileService.changingElementId(entity.getId(), profileChatId);
         return dto;
     }
@@ -90,6 +96,8 @@ public class AutomobileService {
     public void delete(Integer id) {
         avtoRepository.deleteById(id);
     }
+
+    //Updating
 
     public void setCity(Integer changingElementId, String city) {
         Optional<AutomobileEntity> entity = avtoRepository.findById(changingElementId);
@@ -220,5 +228,38 @@ public class AutomobileService {
         AutomobileEntity entity1 = entity.get();
         entity1.setDistrict(district);
         avtoRepository.save(entity1);
+    }
+
+    public void setSalaryType(Integer id, String salaryType) {
+        Optional<AutomobileEntity> entity = avtoRepository.findById(id);
+        if (entity.isEmpty()) {
+            System.out.println("Nomalum Id kiritildi Manzil(AutoService (setSalaryType))");
+            return;
+        }
+        AutomobileEntity entity1 = entity.get();
+        entity1.setSalaryType(SelectedPurchaseType.valueOf(salaryType));
+        avtoRepository.save(entity1);
+    }
+
+    public String changeAcctiveStatus(String id, AcctiveStatus acctiveStatus) {
+        try {
+            String iD = GeneralService.checkMoneyFromTheString(id);
+            Integer autoId=Integer.valueOf(iD);
+            Optional<AutomobileEntity> auto = avtoRepository.findById(autoId);
+            if (auto.isEmpty()) {
+                return "Avtomobile id si noto'g'ri kiritildi!";
+            }
+            AutomobileEntity entity = auto.get();
+            entity.setAcctiveStatus(acctiveStatus);
+            avtoRepository.save(entity);
+            return "Ma'lumot muvaffaqiyatli saqlandi!";
+        }catch (Exception e){
+            return "Malumot kiritishda xatolik, iltimos e'tiborli bo'ing";
+        }
+    }
+
+    public AutomobileDTO getById(Integer autoId) {
+        Optional<AutomobileEntity> entity = avtoRepository.findById(autoId);
+        return entity.map(this::toDTO).orElse(null);
     }
 }

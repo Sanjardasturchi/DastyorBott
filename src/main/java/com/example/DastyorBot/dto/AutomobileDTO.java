@@ -14,7 +14,7 @@ public class AutomobileDTO {
     private Integer id;
     private String city;  //shahar
     private CarType carType;
-    private SelectedPurchaseType type; // Rent or Sale
+    private SelectedPurchaseType salaryType; // Rent or Sale
     private String brandName;
     private String model;
     private Double price;

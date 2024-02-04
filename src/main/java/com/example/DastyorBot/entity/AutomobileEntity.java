@@ -32,7 +32,7 @@ public class  AutomobileEntity{
     private Double latitude;
     private Double longitude;
     @Enumerated(EnumType.STRING)
-    private SelectedPurchaseType type; // Rent or Sale
+    private SelectedPurchaseType salaryType; // Rent or Sale
     private String city;  //shahar
     private String district; //tuman
     @Column(name = "brand_name")
